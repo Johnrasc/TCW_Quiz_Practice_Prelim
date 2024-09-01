@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCW Quiz Practice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        .quiz-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .question {
+            font-size: 18px;
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .options {
+            list-style-type: none;
+            padding: 0;
+            text-align: left;
+        }
+        .options li {
+            background-color: #f4f4f4;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .options li.selected {
+            background-color: #d3d3d3;
+        }
+        .options li.correct {
+            background-color: #c8e6c9;
+            color: #2e7d32;
+        }
+        .options li.wrong {
+            background-color: #ffcdd2;
+            color: #c62828;
+        }
+        .options li:hover {
+            background-color: #e0e0e0;
+        }
+        .btn {
+            background-color: #008cba;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+        }
+        .btn:hover {
+            background-color: #005f5f;
+        }
+        .result {
+            font-size: 20px;
+            margin-top: 20px;
+        }
+        #scrollToTopBtn {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            right: 30px;
+            z-index: 99;
+            background-color: #008cba;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #scrollToTopBtn:hover {
+            background-color: #005f5f;
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <h1>TCW Quiz Practice</h1>
+    <div id="quiz"></div>
+    <button id="submit" class="btn">Submit</button>
+    <button id="retry" class="btn" style="display:none;">Try Again</button>
+    <div id="result" class="result"></div>
+</div>
+
+<button id="scrollToTopBtn" onclick="scrollToTop()">Top</button>
+
+<script>
+const quizData = [
+    {
+        question: "This refers to the worldwide interconnection and interdependence of nations, communities, and economies?",
+        options: [
+            "Globalization",
+            "Integration",
+            "Internationalization",
+            "Nationization",
+            "All of the below"
+        ],
+        correctAnswer: "Globalization"
+    },
+    {
+        question: "It is the movement of capital, technology, products, and services across national borders is made easier by globalization.?",
+        options: [
+            "Technological Advancements",
+            "Economic Integration",
+            "Cultural Exchange",
+            "Political Interdependence",
+            "I dont know po"
+        ],
+        correctAnswer: "Economic Integration"
+    },
+    {
+        question: "This helps the development of the way of communication and also transpotation.?",
+        options: [
+            "Technological Advancements",
+            "Economic Integration",
+            "Cultural Exchange",
+            "Political Interdependence",
+            "Cheese"
+        ],
+        correctAnswer: "Technological Advancements"
+    },
+    {
+        question: "Which of these is an example of a global financial institution?",
+        options: [
+            "World Bank",
+            "International Monetary Fund (IMF)",
+            "World Trade Organization (WTO)",
+            "Asian Development Bank (ADB)",
+            "Gojo 1/2"
+        ],
+        correctAnswer: "World Bank"
+    },
+    {
+        question: "Which process allows businesses to operate across multiple countries?",
+        options: [
+            "International Business",
+            "Transnational Operations",
+            "Global Expansion",
+            "Worldwide Commerce",
+            "World domination"
+        ],
+        correctAnswer: "Transnational Operations"
+    },
+    {
+        question: "The spread of cultural beliefs and social activities from one group to another is known as?",
+        options: [
+            "Cultural Diffusion",
+            "Cultural Assimilation",
+            "Cultural Exchange",
+            "Cultural Integration",
+            "Cultural Confusion"
+        ],
+        correctAnswer: "Cultural Diffusion"
+    },
+    {
+        question: "Which factor primarily drives economic globalization?",
+        options: [
+            "Trade Liberalization",
+            "Technological Innovation",
+            "Foreign Direct Investment",
+            "Market Expansion",
+            "Money printing machines"
+        ],
+        correctAnswer: "Trade Liberalization"
+    },
+    {
+        question: "What is a common negative impact of globalization on developing countries?",
+        options: [
+            "Economic Dependency",
+            "Cultural Erosion",
+            "Environmental Degradation",
+            "Loss of Jobs",
+            "Increased TikTok dances"
+        ],
+        correctAnswer: "Economic Dependency"
+    },
+    {
+        question: "What term refers to the increasing connectivity and interdependence of world markets?",
+        options: [
+            "Global Network",
+            "World Market Integration",
+            "International Trade",
+            "Global Commerce",
+            "The World Wide Web"
+        ],
+        correctAnswer: "Global Network"
+    },
+    {
+        question: "Which organization often helps regulate international trade?",
+        options: [
+            "World Trade Organization (WTO)",
+            "International Monetary Fund (IMF)",
+            "United Nations (UN)",
+            "World Bank",
+            "The Avengers"
+        ],
+        correctAnswer: "World Trade Organization (WTO)"
+    },
+    {
+        question: "What is the impact of globalization on culture?",
+        options: [
+            "Cultural Homogenization",
+            "Cultural Hybridization",
+            "Cultural Imperialism",
+            "Cultural Erosion",
+            "Global Pop Songs"
+        ],
+        correctAnswer: "Cultural Homogenization"
+    },
+    {
+        question: "What is the role of technology in globalization?",
+        options: [
+            "Facilitating Communication",
+            "Enabling E-commerce",
+            "Accelerating Knowledge Sharing",
+            "Enhancing Global Networks",
+            "Inventing solar powede solar panels"
+        ],
+        correctAnswer: "Facilitating Communication"
+    },
+    {
+        question: "What is a major benefit of globalization for consumers?",
+        options: [
+            "Lower Prices",
+            "Increased Product Variety",
+            "Better Quality Products",
+            "Faster Innovation",
+            "Unlimited Netflix shows"
+        ],
+        correctAnswer: "Increased Product Variety"
+    },
+    {
+        question: "Which term refers to the movement of people across borders?",
+        options: [
+            "Migration",
+            "Immigration",
+            "Emigration",
+            "Population Movement",
+            "Vacation Planning"
+        ],
+        correctAnswer: "Migration"
+    },
+    {
+        question: "Which of the following is a primary driver of global trade?",
+        options: [
+            "Comparative Advantage",
+            "Trade Liberalization",
+            "Technological Advancements",
+            "Economic Policies",
+            "50% sales in stores"
+        ],
+        correctAnswer: "Comparative Advantage"
+    },
+    {
+        question: "What is a common environmental concern linked to globalization?",
+        options: [
+            "Climate Change",
+            "Deforestation",
+            "Pollution",
+            "Loss of Biodiversity",
+            "Global warming because of you"
+        ],
+        correctAnswer: "Climate Change"
+    },
+    {
+        question: "Which of the following is an example of cultural globalization?",
+        options: [
+            "Spread of Fast Food Chains",
+            "Adoption of Foreign Languages",
+            "Global Music Trends",
+            "International Sports Events",
+            "The worldwide love for cat videos"
+        ],
+        correctAnswer: "Spread of Fast Food Chains"
+    },
+    {
+        question: "Which concept refers to the integration of global financial markets?",
+        options: [
+            "Financial Globalization",
+            "Economic Integration",
+            "Capital Market Integration",
+            "Global Financial Network",
+            "The Stock Market Game"
+        ],
+        correctAnswer: "Financial Globalization"
+    },
+    {
+        question: "Which sector is most impacted by the global supply chain?",
+        options: [
+            "Manufacturing",
+            "Retail",
+            "Technology",
+            "Automotive",
+            "Supply"
+        ],
+        correctAnswer: "Manufacturing"
+    },
+    {
+        question: "Which phenomenon occurs when one culture dominates another, often due to globalization?",
+        options: [
+            "Cultural Imperialism",
+            "Cultural Assimilation",
+            "Cultural Hegemony",
+            "Cultural Erosion",
+            "Cultural Culture"
+        ],
+        correctAnswer: "Cultural Imperialism"
+    },
+    {
+        question: "What role do multinational corporations play in globalization?",
+        options: [
+            "Facilitating International Trade",
+            "Creating Global Brands",
+            "Outsourcing Production",
+            "Expanding Global Markets",
+            "Taking over the world"
+        ],
+        correctAnswer: "Facilitating International Trade"
+    },
+    {
+        question: "Which term describes the phenomenon of countries becoming economically dependent on each other?",
+        options: [
+            "Economic Interdependence",
+            "Global Economic Integration",
+            "International Economic Relations",
+            "Global Economic Network",
+            "Economic BFFs"
+        ],
+        correctAnswer: "Economic Interdependence"
+    },
+    {
+        question: "Which of the following is a potential downside of globalization?",
+        options: [
+            "Job Loss in Certain Sectors",
+            "Income Inequality",
+            "Environmental Degradation",
+            "Cultural Homogenization",
+            "More complicated time zones"
+        ],
+        correctAnswer: "Job Loss in Certain Sectors"
+    },
+    {
+        question: "Which industry is often at the forefront of global technological innovation?",
+        options: [
+            "Information Technology",
+            "Biotechnology",
+            "Automotive",
+            "Aerospace",
+            "I miss you"
+        ],
+        correctAnswer: "Information Technology"
+    },
+    {
+        question: "Which of the following is an effect of globalization on local cultures?",
+        options: [
+            "Cultural Homogenization",
+            "Cultural Hybridization",
+            "Cultural Erosion",
+            "Cultural Exchange",
+            "Local cuisine becoming global fast food"
+        ],
+        correctAnswer: "Cultural Homogenization"
+    },
+    {
+        question: "Which term refers to the movement of goods and services across international borders?",
+        options: [
+            "International Trade",
+            "Global Commerce",
+            "World Trade",
+            "Cross-Border Trade",
+            "Global shopping spree"
+        ],
+        correctAnswer: "International Trade"
+    },
+    {
+        question: "What is the impact of globalization on international relations?",
+        options: [
+            "Increased Diplomatic Ties",
+            "Enhanced Global Cooperation",
+            "More Economic Alliances",
+            "Improved International Communication",
+            "More complex holiday greetings"
+        ],
+        correctAnswer: "Increased Diplomatic Ties"
+    },
+    {
+        question: "Which concept involves the reduction of barriers to trade?",
+        options: [
+            "Trade Liberalization",
+            "Deregulation",
+            "Market Deregulation",
+            "Tariff Reduction",
+            "Breaking down walls, literally"
+        ],
+        correctAnswer: "Trade Liberalization"
+    },
+    {
+        question: "What is the role of non-governmental organizations (NGOs) in globalization?",
+        options: [
+            "Advocating for Human Rights",
+            "Promoting Sustainable Development",
+            "Providing Humanitarian Aid",
+            "Influencing Global Policy",
+            "Saving the world one cause at a time"
+        ],
+        correctAnswer: "Promoting Sustainable Development"
+    },
+    {
+        question: "Which factor contributes to cultural globalization?",
+        options: [
+            "Mass Media",
+            "Social Media",
+            "Global Communication",
+            "International Tourism",
+            "Global Warning"
+        ],
+        correctAnswer: "Mass Media"
+    },
+    {
+        question: "Which industry benefits most from global outsourcing?",
+        options: [
+            "Manufacturing",
+            "Information Technology",
+            "Customer Service",
+            "Textiles",
+            "Supervillain organizations"
+        ],
+        correctAnswer: "Information Technology"
+    },
+    {
+        question: "What is the effect of globalization on international labor markets?",
+        options: [
+            "Increased Labor Mobility",
+            "Global Wage Competition",
+            "Labor Market Integration",
+            "Expansion of Job Opportunities",
+            "The rise of dinosaurs"
+        ],
+        correctAnswer: "Increased Labor Mobility"
+    },
+    {
+        question: "Which term refers to the global spread of popular culture?",
+        options: [
+            "Cultural Globalization",
+            "Global Popular Culture",
+            "Cultural Diffusion",
+            "Cultural Exchange",
+            "Integrity"
+        ],
+        correctAnswer: "Cultural Globalization"
+    },
+    {
+        question: "Which of the following is a major factor in the globalization of businesses?",
+        options: [
+            "Advances in Technology",
+            "Reduction in Trade Barriers",
+            "Increased Access to Global Markets",
+            "Outsourcing Opportunities",
+            "Business trips to exotic locations"
+        ],
+        correctAnswer: "Advances in Technology"
+    },
+    {
+        question: "What term describes the growth of global economic interdependence?",
+        options: [
+            "Economic Integration",
+            "Global Connectivity",
+            "Market Expansion",
+            "Economic Interdependence",
+            "The Global Village"
+        ],
+        correctAnswer: "Economic Integration"
+    },
+    {
+        question: "Which agreement aims to reduce trade barriers between countries in North America?",
+        options: [
+            "NAFTA",
+            "EU Common Market",
+            "ASEAN Free Trade Area",
+            "Trans-Pacific Partnership",
+            "The North American Trade Alliance"
+        ],
+        correctAnswer: "NAFTA"
+    },
+    {
+        question: "Which global organization focuses on public health?",
+        options: [
+            "World Health Organization (WHO)",
+            "United Nations (UN)",
+            "International Monetary Fund (IMF)",
+            "World Bank",
+            "PhilHealthy"
+        ],
+        correctAnswer: "World Health Organization (WHO)"
+    },
+    {
+        question: "Which term refers to the international movement of capital and investments?",
+        options: [
+            "Capital Flows",
+            "Global Investments",
+            "International Finance",
+            "Financial Globalization",
+            "Wall Street's influence"
+        ],
+        correctAnswer: "Capital Flows"
+    },
+    {
+        question: "What impact does globalization have on employment patterns?",
+        options: [
+            "Job Creation in Emerging Markets",
+            "Increased Outsourcing",
+            "Wage Disparity",
+            "Shift to Service Industries",
+            "More remote work options"
+        ],
+        correctAnswer: "Increased Outsourcing"
+    },
+    {
+        question: "Which sector is most likely to benefit from global trade agreements?",
+        options: [
+            "Agriculture",
+            "Manufacturing",
+            "Services",
+            "Technology",
+            "Retail therapy"
+        ],
+        correctAnswer: "Agriculture"
+    },
+    {
+        question: "Which concept involves the free flow of goods and services across borders?",
+        options: [
+            "Free Trade",
+            "Global Commerce",
+            "International Trade",
+            "Trade Liberalization",
+            "The global shopping spree"
+        ],
+        correctAnswer: "Free Trade"
+    },
+    {
+        question: "Which type of globalization focuses on the spread of ideas and knowledge?",
+        options: [
+            "Cultural Globalization",
+            "Technological Globalization",
+            "Educational Globalization",
+            "Intellectual Globalization",
+            "The Google Effect"
+        ],
+        correctAnswer: "Technological Globalization"
+    },
+    {
+        question: "Which term describes the reduction or removal of restrictions on trade?",
+        options: [
+            "Trade Liberalization",
+            "Market Deregulation",
+            "Economic Opening",
+            "Trade Facilitation",
+            "The global trade makeover"
+        ],
+        correctAnswer: "Trade Liberalization"
+    },
+    {
+        question: "Which concept refers to the increase in the international exchange of goods and services?",
+        options: [
+            "Global Trade Expansion",
+            "Economic Growth",
+            "Market Integration",
+            "Trade Liberalization",
+            "Worldwide shopping frenzy"
+        ],
+        correctAnswer: "Global Trade Expansion"
+    },
+    {
+        question: "Which organization provides financial and technical assistance to developing countries?",
+        options: [
+            "World Bank",
+            "International Monetary Fund (IMF)",
+            "United Nations Development Programme (UNDP)",
+            "World Trade Organization (WTO)",
+            "The Global Fund"
+        ],
+        correctAnswer: "World Bank"
+    },
+    {
+        question: "What is a common effect of globalization on local economies?",
+        options: [
+            "Increased Competition",
+            "Economic Growth",
+            "Investment Opportunities",
+            "Economic Resilience",
+            "Surge in online shopping"
+        ],
+        correctAnswer: "Increased Competition"
+    },
+    {
+        question: "Which term describes the blending of multiple cultural elements into a new form?",
+        options: [
+            "Cultural Hybridization",
+            "Cultural Fusion",
+            "Cultural Assimilation",
+            "Cultural Syncretism",
+            "Global cultural mashups"
+        ],
+        correctAnswer: "Cultural Hybridization"
+    },
+    {
+        question: "What role do global supply chains play in globalization?",
+        options: [
+            "Facilitating Production and Distribution",
+            "Reducing Production Costs",
+            "Increasing Efficiency",
+            "Connecting International Markets",
+            "Ensuring worldwide delivery of pizza"
+        ],
+        correctAnswer: "Facilitating Production and Distribution"
+    },
+    {
+        question: "Which technology is most associated with the globalization of information?",
+        options: [
+            "The Internet",
+            "Television",
+            "Radio",
+            "Telegraph",
+            "Global information highway"
+        ],
+        correctAnswer: "The Internet"
+    },
+    {
+        question: "What is a major challenge of globalization for small businesses?",
+        options: [
+            "Intense Competition",
+            "Access to Global Markets",
+            "Regulatory Compliance",
+            "Market Saturation",
+            "Adapting to global trends"
+        ],
+        correctAnswer: "Intense Competition"
+    },
+    {
+        question: "Which agreement focuses on trade among countries in the Asia-Pacific region?",
+        options: [
+            "Trans-Pacific Partnership (TPP)",
+            "Asia-Pacific Economic Cooperation (APEC)",
+            "Regional Comprehensive Economic Partnership (RCEP)",
+            "ASEAN Free Trade Area",
+            "The Pacific Trade Pact"
+        ],
+        correctAnswer: "Regional Comprehensive Economic Partnership (RCEP)"
+    },
+    {
+        question: "What term refers to the growing interconnectedness of world economies?",
+        options: [
+            "Economic Globalization",
+            "Market Integration",
+            "Global Economic Network",
+            "World Economic Integration",
+            "Economic web of connections"
+        ],
+        correctAnswer: "Economic Globalization"
+    },
+    {
+        question: "Which organization is known for its role in international monetary cooperation?",
+        options: [
+            "International Monetary Fund (IMF)",
+            "World Bank",
+            "Bank for International Settlements (BIS)",
+            "United Nations",
+            "Global Finance Council"
+        ],
+        correctAnswer: "International Monetary Fund (IMF)"
+    },
+    {
+        question: "What is a potential benefit of globalization for education?",
+        options: [
+            "Increased Access to Educational Resources",
+            "Global Collaboration",
+            "Cultural Exchange in Learning",
+            "Educational Innovation",
+            "Studying abroad at an affordable price"
+        ],
+        correctAnswer: "Increased Access to Educational Resources"
+    },
+    {
+        question: "Which global trend involves companies moving their operations to different countries?",
+        options: [
+            "Outsourcing",
+            "Offshoring",
+            "Global Expansion",
+            "Internationalization",
+            "The global relocation trend"
+        ],
+        correctAnswer: "Outsourcing"
+    },
+    {
+        question: "Which term describes the global spread of consumer products and services?",
+        options: [
+            "Consumer Globalization",
+            "Global Market Penetration",
+            "International Trade",
+            "Global Brand Expansion",
+            "Worldwide shopping craze"
+        ],
+        correctAnswer: "Consumer Globalization"
+    },
+    {
+        question: "What is the impact of globalization on international travel?",
+        options: [
+            "Increased Connectivity",
+            "Easier Access to Destinations",
+            "Expansion of Travel Options",
+            "Growth of Tourism Industry",
+            "More frequent flight delays"
+        ],
+        correctAnswer: "Increased Connectivity"
+    },
+    {
+        question: "Which sector benefits significantly from advancements in global logistics?",
+        options: [
+            "Retail",
+            "Manufacturing",
+            "Technology",
+            "Automotive",
+            "Fast food delivery"
+        ],
+        correctAnswer: "Retail"
+    },
+    {
+        question: "Which of the following best describes the influence of global media?",
+        options: [
+            "Cultural Homogenization",
+            "Global Awareness",
+            "Media Saturation",
+            "International Communication",
+            "Celebrity global domination"
+        ],
+        correctAnswer: "Cultural Homogenization"
+    },
+    {
+        question: "Which factor contributes to the rise of global digital economies?",
+        options: [
+            "Digital Transformation",
+            "E-commerce Growth",
+            "Global Connectivity",
+            "Tech Innovations",
+            "Online shopping binges"
+        ],
+        correctAnswer: "E-commerce Growth"
+    },
+    {
+        question: "Which of the following is an example of economic globalization?",
+        options: [
+            "Global Financial Markets",
+            "International Trade Agreements",
+            "Cross-Border Investments",
+            "Global Supply Chains",
+            "More online shopping deals"
+        ],
+        correctAnswer: "Global Financial Markets"
+    },
+    {
+        question: "Which global issue is exacerbated by increased economic activity?",
+        options: [
+            "Climate Change",
+            "Resource Depletion",
+            "Environmental Pollution",
+            "Economic Inequality",
+            "Excessive global selfie-taking"
+        ],
+        correctAnswer: "Climate Change"
+    },
+    {
+        question: "Which term describes the economic integration of developing countries into the global market?",
+        options: [
+            "Global Integration",
+            "Market Liberalization",
+            "Economic Inclusion",
+            "Globalization of Emerging Markets",
+            "The global marketplace makeover"
+        ],
+        correctAnswer: "Economic Inclusion"
+    },
+    {
+        question: "What role do international trade agreements play in globalization?",
+        options: [
+            "Facilitate Trade",
+            "Reduce Barriers",
+            "Enhance Economic Cooperation",
+            "Increase Market Access",
+            "Add more McDonalds in Market-Market"
+        ],
+        correctAnswer: "Facilitate Trade"
+    },
+    {
+        question: "DURING MIDDLE AGES, THIS ROAD BECOME THE ACCESS WAY TOWARDS CHINA AND EUROPE. ALSO, A CENTER OF ECONOMIC ACTIVITIES. WHAT IS THE NAME OF THE ROAD?",
+        options: [
+            "Silk Road",
+            "Gold Road",
+            "Mesopotamia Road",
+            "Your Road",
+            "All of the below"
+        ],
+        correctAnswer: "Silk Road"
+    },
+    {
+        question: "ARRANGE THE FOLLOWING SEQUENCE OF HISTORY OF GLOBALIZATION: 1. GATT, 2. Silk Road, 3. The Great Depression, and 4. Treaty of Tordesillas",
+        options: [
+            "1, 2, 3, and 4",
+            "2, 4, 3, and 1",
+            "1, 4, 2, and 3",
+            "2, 3, 4, and 1",
+            "1, 4, 3, :)"
+        ],
+        correctAnswer: "2, 4, 3, and 1"
+    },
+    {
+        question: "WHAT IS THE PRIMARY GOAL OF GLOBAL CITIZENSHIP EDUCATION?",
+        options: [
+            "TO RESTRAIN NATIONALISTIC IDEAS",
+            "TO LIMIT CROSS-CULTURAL RELATIONSHIP.",
+            "TO ISOLATE LOCAL COMMUNITIES",
+            "PROMOTES PEOPLE'S INVOLVEMENT IN INTERNATIONAL AFFAIRS AND THEIR ENGAGEMENT IN ADDRESSING GLOBAL ISSUES",
+            "HULAAN MO"
+        ],
+        correctAnswer: "PROMOTES PEOPLE'S INVOLVEMENT IN INTERNATIONAL AFFAIRS AND THEIR ENGAGEMENT IN ADDRESSING GLOBAL ISSUES"
+    },
+    {
+        question: "WHEN WAS PROCLAMATION NO. 297 (LIFTING OF THE STATE OF PUBLIC EMERGENCY) DECLARED?",
+        options: [
+            "July 21, 2023",
+            "July 22, 2023",
+            "July 23, 2023",
+            "July 24, 2023",
+            "August 28, 2007"
+        ],
+        correctAnswer: "July 21, 2023"
+    },
+    {
+        question: "WHEN IT COMES TO FINANCIAL AID, INTERNATIONAL FINANCIAL INSTITUTIONS (IFIS) ASSIST A NUMBER OF COUNTRIES IN TERMS OF THE FOLLOWING FACTORS BUT WHICH OF THESE ARE LEAST FUNCTION?",
+        options: [
+            "Build Infastructure",
+            "Recovery for Calamity",
+            "Provide Charities",
+            "Economic Downturns",
+            "All of the side"
+        ],
+        correctAnswer: "Provide Charities"
+    },
+
+];
+
+let randomizedQuizData = [];
+let selectedAnswers = [];
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+function loadQuiz() {
+    randomizedQuizData = shuffleArray([...quizData]).map(question => ({
+        ...question,
+        options: shuffleArray([...question.options])
+    }));
+    selectedAnswers = new Array(randomizedQuizData.length).fill(null);
+
+    const quizDiv = document.getElementById('quiz');
+    quizDiv.innerHTML = '';
+    randomizedQuizData.forEach((data, index) => {
+        const questionEl = document.createElement('div');
+        questionEl.classList.add('question');
+        questionEl.textContent = `${index + 1}. ${data.question}`;
+        
+        const optionsEl = document.createElement('ul');
+        optionsEl.classList.add('options');
+
+        data.options.forEach((option, i) => {
+            const optionEl = document.createElement('li');
+            optionEl.textContent = option;
+            optionEl.dataset.questionIndex = index;
+            optionEl.dataset.optionText = option;
+            optionEl.addEventListener('click', selectAnswer);
+            optionsEl.appendChild(optionEl);
+        });
+
+        quizDiv.appendChild(questionEl);
+        quizDiv.appendChild(optionsEl);
+    });
+}
+
+function selectAnswer(event) {
+    const questionIndex = event.target.dataset.questionIndex;
+    const optionText = event.target.dataset.optionText;
+
+    selectedAnswers[questionIndex] = optionText;
+
+    const optionsEls = event.target.parentNode.querySelectorAll('li');
+    optionsEls.forEach(optionEl => optionEl.classList.remove('selected'));
+    event.target.classList.add('selected');
+}
+
+function showResults() {
+    const optionsEls = document.querySelectorAll('.options li');
+    optionsEls.forEach(optionEl => {
+        const questionIndex = optionEl.dataset.questionIndex;
+        const optionText = optionEl.dataset.optionText;
+
+        if (optionText === randomizedQuizData[questionIndex].correctAnswer) {
+            optionEl.classList.add('correct');
+        } else if (selectedAnswers[questionIndex] === optionText) {
+            optionEl.classList.add('wrong');
+        }
+    });
+
+    const score = selectedAnswers.reduce((total, answer, index) => {
+        return total + (answer === randomizedQuizData[index].correctAnswer ? 1 : 0);
+    }, 0);
+
+    const resultDiv = document.getElementById('result');
+    resultDiv.textContent = `You scored ${score} out of ${randomizedQuizData.length}`;
+    document.getElementById('submit').style.display = 'none';
+    document.getElementById('retry').style.display = 'inline-block';
+}
+
+function retryQuiz() {
+    loadQuiz();
+    document.getElementById('submit').style.display = 'inline-block';
+    document.getElementById('retry').style.display = 'none';
+    document.getElementById('result').textContent = '';
+}
+
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+}
+
+window.onscroll = function() {
+    const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+    if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+        scrollToTopBtn.style.display = 'block';
+    } else {
+        scrollToTopBtn.style.display = 'none';
+    }
+};
+
+document.getElementById('submit').addEventListener('click', showResults);
+document.getElementById('retry').addEventListener('click', retryQuiz);
+
+loadQuiz();
+</script>
+
+</body>
+</html>
